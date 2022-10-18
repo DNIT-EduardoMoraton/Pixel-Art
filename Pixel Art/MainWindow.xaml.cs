@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Text.RegularExpressions;
 
 namespace Pixel_Art
 {
@@ -79,33 +80,27 @@ namespace Pixel_Art
 
         private void CustomColor_TextChanged(object sender, TextChangedEventArgs e)
         {
+            customColorRadioButton.IsChecked = true;
             TextBox tb = (TextBox)sender;
+            Border b = (Border)tb.Parent;
             String text = tb.Text;
+            ColorConverter cc = new ColorConverter();
+            Regex rgx = new Regex("^(?:[0-9a-fA-F]{3}){2}$");
+            Match matcher = rgx.Match(text);
 
 
-            if (text.Length == 6)
+            if (matcher.Success)
             {
-                String Rhex = text.Substring(0, 2).ToUpper();
-                String Ghex = text.Substring(2, 2).ToUpper();
-                String Bhex = text.Substring(4, 2).ToUpper();
-                rgbtext.Text = Rhex + Ghex + Bhex;
-                int R = int.Parse(Rhex, System.Globalization.NumberStyles.HexNumber);
-                int G = int.Parse(Rhex, System.Globalization.NumberStyles.HexNumber);
-                int B = int.Parse(Rhex, System.Globalization.NumberStyles.HexNumber);
-                Color c = new Color();
-                c.R = Byte.Parse(Rhex);
-                c.G = Byte.Parse(Ghex);
-                c.B = Byte.Parse(Bhex);
-                SolidColorBrush brushColor = new SolidColorBrush(c);
-                rgbtext.Text = brushColor.ToString();
-                rgbtext.Background = brushColor;
+                b.BorderBrush = Brushes.Green;
+
+                SolidColorBrush brushColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF" + text));
                 currentColorIndicator.Background = brushColor;
                 currentColor = brushColor;
             }
-
-
-
-
+            else
+            {
+                b.BorderBrush = Brushes.Red;
+            }
         }
 
         public void CreateGrid((int x, int y) grid)
@@ -157,8 +152,16 @@ namespace Pixel_Art
             radioButtonsColorList.Add(createColorRadioButton(Brushes.Pink, "Rosa"));
             radioButtonsColorList.Add(createColorRadioButton(Brushes.Salmon, "Salmon"));
 
+
+
+            Border borCustomColor = new Border();
+            
             TextBox customColor = new TextBox();
             customColor.TextChanged += CustomColor_TextChanged;
+
+
+            borCustomColor.Child = customColor;
+            borCustomColor.BorderThickness = new Thickness(3);
 
             radioButtonsColorList[0].IsChecked = true;
 
@@ -167,7 +170,7 @@ namespace Pixel_Art
                 colorsStackPanel.Children.Add(radio);
             }
 
-            colorsStackPanel.Children.Add(customColor);
+            colorsStackPanel.Children.Add(borCustomColor);
             
         }
 

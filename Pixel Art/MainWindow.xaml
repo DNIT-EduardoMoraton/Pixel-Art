@@ -38,6 +38,7 @@
                     
                 </StackPanel>
                 <StackPanel>
+                    <RadioButton Content="Color custom" x:Name="customColorRadioButton" GroupName="colors"></RadioButton>
                     <Button Content="Rellenar" Click="RellenarButton_Click"></Button>
                     <Button Content="Eliminar" Click="EliminarButton_Click"></Button>
                     <Border x:Name="currentColorIndicator" Width="20" Height="20"></Border>
