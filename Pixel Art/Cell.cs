@@ -15,7 +15,7 @@ namespace Pixel_Art
         private (int x, int y) pos;
 
 
-        private String customColor;
+        private String customColor { get => this.insideBorder.Background.ToString(); }
 
         public Cell((int x, int y) pos)
         {
@@ -39,6 +39,25 @@ namespace Pixel_Art
             this.insideBorder.Style = s;
         }
 
+        public void setColor(SolidColorBrush c)
+        {
+            this.insideBorder.Background = c;
+        }
+
+        public void Hover()
+        {
+            this.insideBorder.BorderBrush = Brushes.Black;
+            this.insideBorder.BorderThickness = new Thickness(1.5);
+        }
+
+        public void Unhover()
+        {
+
+            this.insideBorder.BorderBrush = Brushes.Gray;
+            this.insideBorder.BorderThickness = new Thickness(0.5);
+        }
+
+
         public static bool operator ==(Border b, Cell c)
         {
             return c.GetInsideBorder() == b;
@@ -49,10 +68,22 @@ namespace Pixel_Art
             return c.GetInsideBorder() != b;
         }
 
-        public void setColor()
+
+        public override bool Equals(object obj)
         {
-            this.insideBorder.Background = Brushes.Red;
+            return obj is Cell cell &&
+                   EqualityComparer<Border>.Default.Equals(insideBorder, cell.insideBorder) &&
+                   pos.Equals(cell.pos) &&
+                   customColor == cell.customColor;
         }
 
+        public override int GetHashCode()
+        {
+            int hashCode = -905174207;
+            hashCode = hashCode * -1521134295 + EqualityComparer<Border>.Default.GetHashCode(insideBorder);
+            hashCode = hashCode * -1521134295 + pos.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(customColor);
+            return hashCode;
+        }
     }
 }

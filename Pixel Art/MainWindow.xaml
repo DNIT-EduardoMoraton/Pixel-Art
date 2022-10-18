@@ -8,12 +8,17 @@
         Title="MainWindow" Height="600" Width="900">
     <Window.Resources>
         <Style TargetType="Border" x:Key="cellStyle">
-            <Setter Property="BorderThickness" Value="0.1"></Setter>
-            <Setter Property="BorderBrush" Value="Black"></Setter>
+            <Setter Property="Background" Value="Transparent"></Setter>
+            <Setter Property="BorderThickness" Value="0.5"></Setter>
+            <Setter Property="BorderBrush" Value="Gray"></Setter>
             <EventSetter Event="MouseEnter" Handler="CellMouseEnter"></EventSetter>
-            <EventSetter Event="MouseLeftButtonDown" Handler="CellLeftMouseButtonDown"></EventSetter>
+            <EventSetter Event="MouseLeave" Handler="CellMouseLeave"></EventSetter>
+            <EventSetter Event="MouseDown" Handler="CellMouseDown"></EventSetter>
         </Style>
-        
+        <Style TargetType="RadioButton">
+
+            <EventSetter Event="Checked" Handler="RadioButtonColorPick_Checked"></EventSetter>
+        </Style>
         
     </Window.Resources>
     
@@ -29,13 +34,24 @@
                 
             </StackPanel>
             <StackPanel DockPanel.Dock="Right" Width="150" Background="Aqua">
-                
+                <StackPanel x:Name="colorsStackPanel">
+                    
+                </StackPanel>
+                <StackPanel>
+                    <Button Content="Rellenar" Click="RellenarButton_Click"></Button>
+                    <Button Content="Eliminar" Click="EliminarButton_Click"></Button>
+                    <Border x:Name="currentColorIndicator" Width="20" Height="20"></Border>
+                    <TextBlock x:Name="rgbtext"></TextBlock>
+                </StackPanel>
             </StackPanel>
-            <Border Margin="20" Width="500" Height="500">
-                <Grid x:Name="canvasGrid" >
+            <Viewbox Stretch="Uniform">
+                <Border Margin="20" Width="500" Height="500" BorderThickness="3" BorderBrush="Black">
+                    <Grid x:Name="canvasGrid" >
 
-                </Grid>
-            </Border>
+                    </Grid>
+                </Border>
+            </Viewbox>
+
 
         </DockPanel>
     </Grid>
