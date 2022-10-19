@@ -25,6 +25,7 @@ namespace Pixel_Art
         private (int x, int y) canvasSize;
         private List<Cell> cellList;
         private SolidColorBrush currentColor;
+        bool changed = false;
         public MainWindow()
         {
             InitializeComponent();
@@ -32,6 +33,8 @@ namespace Pixel_Art
             cellList = new List<Cell>();
             currentColor = Brushes.Black;
 
+
+            AddOptionsForNewCanvas();
             CreateGrid(canvasSize);
             AddCells(canvasSize);
             FillColorPanel();
@@ -43,7 +46,13 @@ namespace Pixel_Art
             Cell cell = cellList.Find(c => b == c);
             cell.Hover();
             if (e.LeftButton == MouseButtonState.Pressed)
+            {
                 cell.setColor(currentColor);
+                changed = true;
+            }
+               
+
+           
         }
 
         public void CellMouseLeave(object sender, MouseEventArgs e)
@@ -51,14 +60,18 @@ namespace Pixel_Art
             Border b = (Border)sender;
             Cell cell = cellList.Find(c => b == c);
             cell.Unhover();
+
             
+
         }
         public void CellMouseDown(object sender, MouseEventArgs e)
         {
             Border b = (Border)sender;
             Cell cell = cellList.Find(c => b == c);
-            if (e.LeftButton == MouseButtonState.Pressed)
-                cell.setColor(currentColor);
+
+            cell.setColor(currentColor);
+
+            changed = true;
         }
 
 
@@ -78,13 +91,37 @@ namespace Pixel_Art
             cellList.ForEach(cell => cell.setColor(currentColor));
         }
 
+
+        private void newCanvasButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button b = (Button)sender;
+            (int x, int y) newCanvasSize = ((int, int))b.Tag;
+
+            if (changed)
+            {
+                MessageBoxResult msbRes =  MessageBox.Show($"Se han realizado cambios en el dibujo, ¿Desea crear uno nuevo de {newCanvasSize.ToString()} pixeles? Si lo hace perdera los Cambios", "Aaa", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (msbRes == MessageBoxResult.Yes)
+                {
+                    CreateGrid(newCanvasSize);
+                    AddCells(newCanvasSize);
+                    changed = false;
+                }
+            } else
+            {
+                CreateGrid(newCanvasSize);
+                AddCells(newCanvasSize);
+                changed = false;
+            }
+
+
+        }
+
         private void CustomColor_TextChanged(object sender, TextChangedEventArgs e)
         {
             customColorRadioButton.IsChecked = true;
             TextBox tb = (TextBox)sender;
             Border b = (Border)tb.Parent;
             String text = tb.Text;
-            ColorConverter cc = new ColorConverter();
             Regex rgx = new Regex("^(?:[0-9a-fA-F]{3}){2}$");
             Match matcher = rgx.Match(text);
 
@@ -105,24 +142,27 @@ namespace Pixel_Art
 
         public void CreateGrid((int x, int y) grid)
         {
-            List<ColumnDefinition> colsList = new List<ColumnDefinition>();
-            List<RowDefinition> rowsList = new List<RowDefinition>();
+            canvasGrid.RowDefinitions.Clear();
+            canvasGrid.ColumnDefinitions.Clear();
+            canvasGrid.Children.Clear();
+
+ 
 
             for (int i = 0; i < grid.x; i++)
             {
-                colsList.Add(new ColumnDefinition());
+                canvasGrid.ColumnDefinitions.Add(new ColumnDefinition());
             }
             for (int i = 0; i < grid.y; i++)
             {
-                rowsList.Add(new RowDefinition());
+                canvasGrid.RowDefinitions.Add(new RowDefinition());
             }
 
-            colsList.ForEach(c => canvasGrid.ColumnDefinitions.Add(c));
-            rowsList.ForEach(r => canvasGrid.RowDefinitions.Add(r));
+
         }
 
         public void AddCells((int x, int y) canvas)
         {
+            cellList = new List<Cell>();
             for (int i = 0; i < canvas.x; i++)
             {
                 for (int j = 0; j < canvas.y; j++)
@@ -142,15 +182,15 @@ namespace Pixel_Art
 
         public void FillColorPanel()
         {
-            List<RadioButton> radioButtonsColorList = new List<RadioButton>();
+            List<StackPanel> colorSelector_StackPanel = new List<StackPanel>();
 
-            radioButtonsColorList.Add(createColorRadioButton(Brushes.Black, "Negro"));
-            radioButtonsColorList.Add(createColorRadioButton(Brushes.Red, "Rojo"));
-            radioButtonsColorList.Add(createColorRadioButton(Brushes.Yellow, "Amarillo"));
-            radioButtonsColorList.Add(createColorRadioButton(Brushes.Aqua, "Aqua"));
-            radioButtonsColorList.Add(createColorRadioButton(Brushes.Brown, "Marron"));
-            radioButtonsColorList.Add(createColorRadioButton(Brushes.Pink, "Rosa"));
-            radioButtonsColorList.Add(createColorRadioButton(Brushes.Salmon, "Salmon"));
+            colorSelector_StackPanel.Add(createColorSelector_StackPanel(Brushes.Black, "Negro"));
+            colorSelector_StackPanel.Add(createColorSelector_StackPanel(Brushes.Red, "Rojo"));
+            colorSelector_StackPanel.Add(createColorSelector_StackPanel(Brushes.Yellow, "Amarillo"));
+            colorSelector_StackPanel.Add(createColorSelector_StackPanel(Brushes.Aqua, "Aqua"));
+            colorSelector_StackPanel.Add(createColorSelector_StackPanel(Brushes.Brown, "Marron"));
+            colorSelector_StackPanel.Add(createColorSelector_StackPanel(Brushes.Pink, "Rosa"));
+            colorSelector_StackPanel.Add(createColorSelector_StackPanel(Brushes.Salmon, "Salmon"));
 
 
 
@@ -163,11 +203,11 @@ namespace Pixel_Art
             borCustomColor.Child = customColor;
             borCustomColor.BorderThickness = new Thickness(3);
 
-            radioButtonsColorList[0].IsChecked = true;
-
-            foreach (RadioButton radio in radioButtonsColorList)
+            RadioButton firstRadio = (RadioButton)colorSelector_StackPanel[0].Children[0];
+            firstRadio.IsChecked = true;
+            foreach (StackPanel sp in colorSelector_StackPanel)
             {
-                colorsStackPanel.Children.Add(radio);
+                colorsStackPanel.Children.Add(sp);
             }
 
             colorsStackPanel.Children.Add(borCustomColor);
@@ -175,16 +215,51 @@ namespace Pixel_Art
         }
 
 
-        public RadioButton createColorRadioButton(SolidColorBrush b, String name)
+        public StackPanel createColorSelector_StackPanel(SolidColorBrush brush, String name)
         {
+            StackPanel sp = new StackPanel();
+
             String GROUP_NAME = "colors";
             RadioButton r = new RadioButton();
             r.Content = name;
-            r.Tag = b;
+            r.Tag = brush;
             r.GroupName = GROUP_NAME;
 
-            return r;
+            Border b = new Border();
+            b.Width = 10;
+            b.Height = 10;
+            b.Background = brush;
+
+            sp.Children.Add(r);
+            sp.Children.Add(b);
+            
+            return sp;
         }
+
+        public void AddOptionsForNewCanvas()
+        {
+
+
+
+
+            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((10, 10)));
+            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((20, 20)));
+            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((40, 40)));
+            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((100, 100)));
+        }
+
+        public Button CreateOptionNewCanvasButton((int x, int y) newCanvasSize)
+        {
+            Button b = new Button();
+            b.Tag = newCanvasSize;
+            // Añadir estilo
+            b.Click += newCanvasButton_Click;
+            b.Content = newCanvasSize.ToString();
+            b.Style = (Style)this.Resources["newCanvasButton"];
+
+            return b;
+        }
+
 
     }
 }

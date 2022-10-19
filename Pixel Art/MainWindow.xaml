@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pixel_Art"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="900">
+        Title="MainWindow" Height="600" Width="900"
+        Background="#282a36">
     <Window.Resources>
         <Style TargetType="Border" x:Key="cellStyle">
             <Setter Property="Background" Value="Transparent"></Setter>
@@ -19,41 +20,49 @@
 
             <EventSetter Event="Checked" Handler="RadioButtonColorPick_Checked"></EventSetter>
         </Style>
+        <Style TargetType="Button" x:Key="newCanvasButton">
+            <Setter Property="Margin" Value="5"></Setter>
+            <Setter Property="Background" Value="Transparent"></Setter>
+            <Setter Property="BorderBrush" Value="#bd93f9"></Setter>
+            <Setter Property="BorderThickness" Value="1"></Setter>
+        </Style>
+        
+        
         
     </Window.Resources>
     
     
-    <Grid>
-        <DockPanel>
-            <StackPanel DockPanel.Dock="Left" Width="100" Orientation="Horizontal" Background="Aqua">
-                <Border>
-                    <StackPanel>
-                        <TextBlock>Nuevo</TextBlock>
-                    </StackPanel>
-                </Border>
+   
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Left" Width="100" Orientation="Vertical" Background="#44475a">
+            <Border Margin="10" BorderBrush="#6272a4" BorderThickness="2" CornerRadius="4">
+                <StackPanel x:Name="newCanvasStackPanel">
+                        
+                </StackPanel>
+            </Border>
                 
-            </StackPanel>
-            <StackPanel DockPanel.Dock="Right" Width="150" Background="Aqua">
-                <StackPanel x:Name="colorsStackPanel">
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Right" Width="150" Background="Aqua">
+            <StackPanel x:Name="colorsStackPanel">
                     
-                </StackPanel>
-                <StackPanel>
-                    <RadioButton Content="Color custom" x:Name="customColorRadioButton" GroupName="colors"></RadioButton>
-                    <Button Content="Rellenar" Click="RellenarButton_Click"></Button>
-                    <Button Content="Eliminar" Click="EliminarButton_Click"></Button>
-                    <Border x:Name="currentColorIndicator" Width="20" Height="20"></Border>
-                    <TextBlock x:Name="rgbtext"></TextBlock>
-                </StackPanel>
             </StackPanel>
-            <Viewbox Stretch="Uniform">
-                <Border Margin="20" Width="500" Height="500" BorderThickness="3" BorderBrush="Black">
-                    <Grid x:Name="canvasGrid" >
+            <StackPanel>
+                <RadioButton Content="Color custom" x:Name="customColorRadioButton" GroupName="colors"></RadioButton>
+                <Button Content="Rellenar" Click="RellenarButton_Click"></Button>
+                <Button Content="Eliminar" Click="EliminarButton_Click"></Button>
+                <Border x:Name="currentColorIndicator" Width="20" Height="20"></Border>
+                <TextBlock x:Name="rgbtext"></TextBlock>
+            </StackPanel>
+        </StackPanel>
+        <Viewbox Stretch="Uniform">
+            <Border Margin="20" Width="500" Height="500" BorderThickness="3" BorderBrush="#44475a">
+                <Grid x:Name="canvasGrid" >
 
-                    </Grid>
-                </Border>
-            </Viewbox>
+                </Grid>
+            </Border>
+        </Viewbox>
 
 
-        </DockPanel>
-    </Grid>
+    </DockPanel>
+   
 </Window>
