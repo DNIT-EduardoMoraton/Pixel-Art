@@ -53,6 +53,9 @@
                 <Border x:Name="currentColorIndicator" Width="20" Height="20"></Border>
                 <TextBlock x:Name="rgbtext"></TextBlock>
             </StackPanel>
+            <StackPanel>
+                <Button x:Name="saveToPng" Click="saveToPng_Click">SAVE</Button>
+            </StackPanel>
         </StackPanel>
         <Viewbox Stretch="Uniform">
             <Border Margin="20" Width="500" Height="500" BorderThickness="3" BorderBrush="#44475a">

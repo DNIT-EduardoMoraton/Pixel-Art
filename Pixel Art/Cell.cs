@@ -44,6 +44,12 @@ namespace Pixel_Art
             this.insideBorder.Background = c;
         }
 
+        public Color getColor()
+        {
+            SolidColorBrush a = (SolidColorBrush)this.insideBorder.Background;
+            return a.Color;
+        }
+
         public void Hover()
         {
             this.insideBorder.BorderBrush = Brushes.Black;

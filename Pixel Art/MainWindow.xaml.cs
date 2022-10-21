@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Text.RegularExpressions;
+using Microsoft.Win32;
 
 namespace Pixel_Art
 {
@@ -260,6 +261,12 @@ namespace Pixel_Art
             return b;
         }
 
-
+        private void saveToPng_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            //saveFileDialog.Filter = "png file (*.png)|*.png|";
+            if (saveFileDialog.ShowDialog() == true)
+                Conversor.CreateBipMapFromCellList(canvasSize, saveFileDialog.FileName, cellList);
+        }
     }
 }
