@@ -8,7 +8,7 @@
         Title="MainWindow" Height="600" Width="900"
         Background="#282a36">
     <Window.Resources>
-        <Style TargetType="Border" x:Key="cellStyle">
+        <Style TargetType="{x:Type Border}" x:Key="cellStyle">
             <Setter Property="Background" Value="Transparent"></Setter>
             <Setter Property="BorderThickness" Value="0.5"></Setter>
             <Setter Property="BorderBrush" Value="Gray"></Setter>
@@ -37,8 +37,13 @@
         <StackPanel DockPanel.Dock="Left" Width="100" Orientation="Vertical" Background="#44475a">
             <Border Margin="10" BorderBrush="#6272a4" BorderThickness="2" CornerRadius="4">
                 <StackPanel x:Name="newCanvasStackPanel">
-                        
+                    
+                    <StackPanel>
+                        <Button x:Name="saveToPngButton" Click="saveToPng_Click">SAVE</Button>
+                        <Button x:Name="openButton" Click="openButton_Click">OPEN</Button>
+                    </StackPanel>
                 </StackPanel>
+
             </Border>
                 
         </StackPanel>
@@ -53,9 +58,7 @@
                 <Border x:Name="currentColorIndicator" Width="20" Height="20"></Border>
                 <TextBlock x:Name="rgbtext"></TextBlock>
             </StackPanel>
-            <StackPanel>
-                <Button x:Name="saveToPng" Click="saveToPng_Click">SAVE</Button>
-            </StackPanel>
+
         </StackPanel>
         <Viewbox Stretch="Uniform">
             <Border Margin="20" Width="500" Height="500" BorderThickness="3" BorderBrush="#44475a">

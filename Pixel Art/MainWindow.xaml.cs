@@ -143,6 +143,7 @@ namespace Pixel_Art
 
         public void CreateGrid((int x, int y) grid)
         {
+            canvasSize = grid;
             canvasGrid.RowDefinitions.Clear();
             canvasGrid.ColumnDefinitions.Clear();
             canvasGrid.Children.Clear();
@@ -243,10 +244,11 @@ namespace Pixel_Art
 
 
 
-            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((10, 10)));
-            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((20, 20)));
-            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((40, 40)));
-            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((100, 100)));
+            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((8, 8)));
+            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((16, 16)));
+            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((32, 32)));
+            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((64, 64)));
+            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((128, 128)));
         }
 
         public Button CreateOptionNewCanvasButton((int x, int y) newCanvasSize)
@@ -264,9 +266,19 @@ namespace Pixel_Art
         private void saveToPng_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            //saveFileDialog.Filter = "png file (*.png)|*.png|";
+            saveFileDialog.Filter = "png file (*.png)|*.png|ico file (*.ico)|*.ico";
+            
             if (saveFileDialog.ShowDialog() == true)
-                Conversor.CreateBipMapFromCellList(canvasSize, saveFileDialog.FileName, cellList);
+                Conversor.CreateFile(saveFileDialog.FilterIndex, canvasSize, saveFileDialog.FileName, cellList);
+        }
+
+        private void openButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog saveFileDialog = new OpenFileDialog();
+            saveFileDialog.Filter = "png file (*.png)|*.png";
+
+            if (saveFileDialog.ShowDialog() == true)
+                cellList = Conversor.OpenPngToCellList(saveFileDialog.FileName);
         }
     }
 }
