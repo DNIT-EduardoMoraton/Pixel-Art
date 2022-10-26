@@ -37,7 +37,7 @@ namespace Pixel_Art
                 var drawingcolor = System.Drawing.Color.FromArgb(
                     mediacolor.A, mediacolor.R, mediacolor.G, mediacolor.B);
 
-                bmp.SetPixel(c.getPos().Item1, c.getPos().Item2, drawingcolor);
+                bmp.SetPixel(c.getPos().Item2, c.getPos().Item1, drawingcolor);
             }
             using (Stream sw = new FileStream(path,FileMode.OpenOrCreate))
             {
@@ -75,9 +75,12 @@ namespace Pixel_Art
                 {
                     Cell c = new Cell((i, j));
 
-                    
-                    
-                    c.setColor((SolidColorBrush) new SolidBrush(System.Windows.Media.Color.FromArgb(bmp.GetPixel(i, j).ToArgb())))
+                    byte r = bmp.GetPixel(i, j).R;
+                    byte g = bmp.GetPixel(i, j).G;
+                    byte b = bmp.GetPixel(i, j).B;
+                    byte a = bmp.GetPixel(i, j).A;
+
+                    c.setColor((SolidColorBrush)(System.Drawing.Color)new SolidBrush(System.Windows.Media.Color.FromArgb(a,r,g,b)));
                 }
             }
 

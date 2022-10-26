@@ -85,11 +85,13 @@ namespace Pixel_Art
         private void EliminarButton_Click(object sender, RoutedEventArgs e)
         {
             cellList.ForEach(cell => cell.setColor(Brushes.Transparent));
+            changed = false;
         }
 
         private void RellenarButton_Click(object sender, RoutedEventArgs e)
         {
             cellList.ForEach(cell => cell.setColor(currentColor));
+            changed = true;
         }
 
 
