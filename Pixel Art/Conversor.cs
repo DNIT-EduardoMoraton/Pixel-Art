@@ -79,13 +79,14 @@ namespace Pixel_Art
                     byte g = bmp.GetPixel(i, j).G;
                     byte b = bmp.GetPixel(i, j).B;
                     byte a = bmp.GetPixel(i, j).A;
-
-                    c.setColor((SolidColorBrush)(System.Drawing.Color)new SolidBrush(System.Windows.Media.Color.FromArgb(a,r,g,b)));
+                    System.Windows.Media.Color newColor = System.Windows.Media.Color.FromArgb(a, r, g, b);
+                    c.setColor(new SolidColorBrush(newColor));
+                    list.Add(c);
                 }
             }
 
 
-
+            
             return list;
         }
 

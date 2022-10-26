@@ -28,7 +28,6 @@ namespace Pixel_Art
         public Border GetInsideBorder() => this.insideBorder;
         public (int, int) getPos() => this.pos;
 
-
         public void AddToGrid(Grid g)
         {
             g.Children.Add(this.insideBorder);

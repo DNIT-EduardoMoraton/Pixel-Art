@@ -280,7 +280,16 @@ namespace Pixel_Art
             saveFileDialog.Filter = "png file (*.png)|*.png";
 
             if (saveFileDialog.ShowDialog() == true)
-                cellList = Conversor.OpenPngToCellList(saveFileDialog.FileName);
+            {
+
+                List<Cell> cellList2 = Conversor.OpenPngToCellList(saveFileDialog.FileName);
+
+                for (int i = 0; i < cellList2.Count(); i++)
+                {
+                    cellList.
+                }
+            }
+                
         }
     }
 }
