@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pixel_Art"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="900"
-        Background="#282a36">
+        Title="Pixel Art" Height="600" Width="900"
+        Background="#282a36" Icon="assets/icon.ico">
     <Window.Resources>
         <Style TargetType="{x:Type Border}" x:Key="cellStyle">
             <Setter Property="Background" Value="Transparent"></Setter>
@@ -26,38 +26,49 @@
             <Setter Property="BorderBrush" Value="#bd93f9"></Setter>
             <Setter Property="BorderThickness" Value="1"></Setter>
         </Style>
-        
-        
-        
+
+        <Style TargetType="Border" x:Key="toolPanel">
+            <Setter Property="Margin" Value="10"></Setter>
+            <Setter Property="BorderThickness" Value="2"></Setter>
+            <Setter Property="BorderBrush" Value="#44475a"></Setter>
+            <Setter Property="Background" Value="#6272a4"></Setter>
+            <Setter Property="CornerRadius" Value="7"></Setter>
+        </Style>
+         
     </Window.Resources>
     
     
    
     <DockPanel>
-        <StackPanel DockPanel.Dock="Left" Width="100" Orientation="Vertical" Background="#44475a">
-            <Border Margin="10" BorderBrush="#6272a4" BorderThickness="2" CornerRadius="4">
+        <StackPanel DockPanel.Dock="Left" Width="170" Orientation="Vertical" Background="#44475a">
+            <Border Style="{DynamicResource toolPanel}">
                 <StackPanel x:Name="newCanvasStackPanel">
                     
                     <StackPanel>
-                        <Button x:Name="saveToPngButton" Click="saveToPng_Click">SAVE</Button>
-                        <Button x:Name="openButton" Click="openButton_Click">OPEN</Button>
+                        <Button x:Name="saveToPngButton" Click="SaveToPng_Click" Style="{StaticResource newCanvasButton}">SAVE</Button>
+                        <Button x:Name="openButton" Click="OpenButton_Click" Style="{StaticResource newCanvasButton}">OPEN</Button>
                     </StackPanel>
                 </StackPanel>
 
             </Border>
                 
         </StackPanel>
-        <StackPanel DockPanel.Dock="Right" Width="150" Background="Aqua">
-            <StackPanel x:Name="colorsStackPanel">
-                    
-            </StackPanel>
-            <StackPanel>
-                <RadioButton Content="Color custom" x:Name="customColorRadioButton" GroupName="colors"></RadioButton>
-                <Button Content="Rellenar" Click="RellenarButton_Click"></Button>
-                <Button Content="Eliminar" Click="EliminarButton_Click"></Button>
-                <Border x:Name="currentColorIndicator" Width="20" Height="20"></Border>
-                <TextBlock x:Name="rgbtext"></TextBlock>
-            </StackPanel>
+        <StackPanel DockPanel.Dock="Right" Width="170" Background="#44475a">
+            <Border Style="{DynamicResource toolPanel}" Padding="7">
+                <StackPanel x:Name="colorsStackPanel">
+
+                </StackPanel>
+            </Border>
+            <Border Style="{DynamicResource toolPanel}">
+                <StackPanel Margin="20">
+                    <RadioButton Content="Color custom" x:Name="customColorRadioButton" GroupName="colors"></RadioButton>
+                    <Button Content="Rellenar" Click="RellenarButton_Click" Style="{StaticResource newCanvasButton}"></Button>
+                    <Button Content="Eliminar" Click="EliminarButton_Click" Style="{StaticResource newCanvasButton}"></Button>
+                    <Border x:Name="currentColorIndicator" Width="20" Height="20"></Border>
+                    <TextBlock x:Name="rgbtext"></TextBlock>
+                </StackPanel>
+            </Border>
+
 
         </StackPanel>
         <Viewbox Stretch="Uniform">

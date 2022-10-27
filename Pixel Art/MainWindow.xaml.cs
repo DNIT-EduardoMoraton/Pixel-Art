@@ -30,7 +30,7 @@ namespace Pixel_Art
         public MainWindow()
         {
             InitializeComponent();
-            canvasSize = (20, 20);
+            canvasSize = (16, 16);
             cellList = new List<Cell>();
             currentColor = Brushes.Black;
 
@@ -39,6 +39,7 @@ namespace Pixel_Art
             CreateGrid(canvasSize);
             AddCells(canvasSize);
             FillColorPanel();
+            currentColorIndicator.Background = currentColor;
         }
 
         public void CellMouseEnter(object sender, MouseEventArgs e)
@@ -49,6 +50,10 @@ namespace Pixel_Art
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 cell.setColor(currentColor);
+                changed = true;
+            } else if (e.RightButton == MouseButtonState.Pressed)
+            {
+                cell.setColor(Brushes.Transparent);
                 changed = true;
             }
                
@@ -70,7 +75,14 @@ namespace Pixel_Art
             Border b = (Border)sender;
             Cell cell = cellList.Find(c => b == c);
 
-            cell.setColor(currentColor);
+            
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                cell.setColor(currentColor);
+            } else
+            {
+                cell.setColor(Brushes.Transparent);
+            }
 
             changed = true;
         }
@@ -80,6 +92,7 @@ namespace Pixel_Art
         {
             RadioButton r = (RadioButton)sender;
             currentColor = (SolidColorBrush)r.Tag;
+            currentColorIndicator.Background = currentColor;
         }
 
         private void EliminarButton_Click(object sender, RoutedEventArgs e)
@@ -95,14 +108,14 @@ namespace Pixel_Art
         }
 
 
-        private void newCanvasButton_Click(object sender, RoutedEventArgs e)
+        private void NewCanvasButton_Click(object sender, RoutedEventArgs e)
         {
             Button b = (Button)sender;
             (int x, int y) newCanvasSize = ((int, int))b.Tag;
 
             if (changed)
             {
-                MessageBoxResult msbRes =  MessageBox.Show($"Se han realizado cambios en el dibujo, ¿Desea crear uno nuevo de {newCanvasSize.ToString()} pixeles? Si lo hace perdera los Cambios", "Aaa", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult msbRes = MessageBox.Show($"Se han realizado cambios en el dibujo, ¿Desea crear uno nuevo de {newCanvasSize} pixeles? Si lo hace perdera los Cambios", "Aaa", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (msbRes == MessageBoxResult.Yes)
                 {
                     CreateGrid(newCanvasSize);
@@ -125,7 +138,7 @@ namespace Pixel_Art
             TextBox tb = (TextBox)sender;
             Border b = (Border)tb.Parent;
             String text = tb.Text;
-            Regex rgx = new Regex("^(?:[0-9a-fA-F]{3}){2}$");
+            Regex rgx = new Regex("^#(?:[0-9a-fA-F]{3}){2}$");
             Match matcher = rgx.Match(text);
 
 
@@ -133,7 +146,7 @@ namespace Pixel_Art
             {
                 b.BorderBrush = Brushes.Green;
 
-                SolidColorBrush brushColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF" + text));
+                SolidColorBrush brushColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString(text));
                 currentColorIndicator.Background = brushColor;
                 currentColor = brushColor;
             }
@@ -186,30 +199,31 @@ namespace Pixel_Art
 
         public void FillColorPanel()
         {
-            List<StackPanel> colorSelector_StackPanel = new List<StackPanel>();
-
-            colorSelector_StackPanel.Add(createColorSelector_StackPanel(Brushes.Black, "Negro"));
-            colorSelector_StackPanel.Add(createColorSelector_StackPanel(Brushes.Red, "Rojo"));
-            colorSelector_StackPanel.Add(createColorSelector_StackPanel(Brushes.Yellow, "Amarillo"));
-            colorSelector_StackPanel.Add(createColorSelector_StackPanel(Brushes.Aqua, "Aqua"));
-            colorSelector_StackPanel.Add(createColorSelector_StackPanel(Brushes.Brown, "Marron"));
-            colorSelector_StackPanel.Add(createColorSelector_StackPanel(Brushes.Pink, "Rosa"));
-            colorSelector_StackPanel.Add(createColorSelector_StackPanel(Brushes.Salmon, "Salmon"));
-
+            List<DockPanel> colorSelector_DockPanel = new List<DockPanel>
+            {
+                CreateColorSelector_DockPanel(Brushes.Black, "Negro"),
+                CreateColorSelector_DockPanel(Brushes.White, "Blanco"),
+                CreateColorSelector_DockPanel(Brushes.Red, "Rojo"),
+                CreateColorSelector_DockPanel(Brushes.Green, "Verde"),
+                CreateColorSelector_DockPanel(Brushes.Blue, "Azul"),
+                CreateColorSelector_DockPanel(Brushes.Yellow, "Amarillo"),
+                CreateColorSelector_DockPanel(Brushes.Orange, "Naranja"),
+                CreateColorSelector_DockPanel(Brushes.Pink, "Rosa")
+            };
 
 
             Border borCustomColor = new Border();
             
             TextBox customColor = new TextBox();
             customColor.TextChanged += CustomColor_TextChanged;
-
+         
 
             borCustomColor.Child = customColor;
             borCustomColor.BorderThickness = new Thickness(3);
 
-            RadioButton firstRadio = (RadioButton)colorSelector_StackPanel[0].Children[0];
+            RadioButton firstRadio = (RadioButton)colorSelector_DockPanel[0].Children[0];
             firstRadio.IsChecked = true;
-            foreach (StackPanel sp in colorSelector_StackPanel)
+            foreach (DockPanel sp in colorSelector_DockPanel)
             {
                 colorsStackPanel.Children.Add(sp);
             }
@@ -219,74 +233,87 @@ namespace Pixel_Art
         }
 
 
-        public StackPanel createColorSelector_StackPanel(SolidColorBrush brush, String name)
+        public DockPanel CreateColorSelector_DockPanel(SolidColorBrush brush, String name)
         {
-            StackPanel sp = new StackPanel();
+            DockPanel sp = new DockPanel();
 
             String GROUP_NAME = "colors";
-            RadioButton r = new RadioButton();
-            r.Content = name;
-            r.Tag = brush;
-            r.GroupName = GROUP_NAME;
+            RadioButton r = new RadioButton
+            {
+                Content = name,
+                Tag = brush,
+                GroupName = GROUP_NAME
+            };
+            DockPanel.SetDock(r, Dock.Left);
 
-            Border b = new Border();
-            b.Width = 10;
-            b.Height = 10;
-            b.Background = brush;
+            Border b = new Border
+            {
+                Width = 10,
+                Height = 10,
+                Background = brush,
+                HorizontalAlignment = HorizontalAlignment.Right
+            };
+            DockPanel.SetDock(b, Dock.Right);
 
             sp.Children.Add(r);
             sp.Children.Add(b);
+            
             
             return sp;
         }
 
         public void AddOptionsForNewCanvas()
         {
-
-
-
-
-            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((8, 8)));
-            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((16, 16)));
-            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((32, 32)));
-            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((64, 64)));
-            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((128, 128)));
+            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((8, 8), "Pequeño"));
+            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((16, 16), "Mediano"));
+            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((32, 32), "Grande"));
+            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((64, 64), "Grande +"));
+            newCanvasStackPanel.Children.Add(CreateOptionNewCanvasButton((128, 128), "Super Grande"));
         }
 
-        public Button CreateOptionNewCanvasButton((int x, int y) newCanvasSize)
+        public Button CreateOptionNewCanvasButton((int x, int y) newCanvasSize, string name)
         {
-            Button b = new Button();
-            b.Tag = newCanvasSize;
-            // Añadir estilo
-            b.Click += newCanvasButton_Click;
-            b.Content = newCanvasSize.ToString();
+            Button b = new Button
+            {
+                Tag = newCanvasSize
+            };
+            b.Click += NewCanvasButton_Click;
+            b.Content = newCanvasSize.ToString() + " " + name;
             b.Style = (Style)this.Resources["newCanvasButton"];
 
             return b;
         }
 
-        private void saveToPng_Click(object sender, RoutedEventArgs e)
+        private void SaveToPng_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "png file (*.png)|*.png|ico file (*.ico)|*.ico";
-            
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "png file (*.png)|*.png|ico file (*.ico)|*.ico"
+            };
+
             if (saveFileDialog.ShowDialog() == true)
                 Conversor.CreateFile(saveFileDialog.FilterIndex, canvasSize, saveFileDialog.FileName, cellList);
         }
 
-        private void openButton_Click(object sender, RoutedEventArgs e)
+        private void OpenButton_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog saveFileDialog = new OpenFileDialog();
-            saveFileDialog.Filter = "png file (*.png)|*.png";
+            OpenFileDialog saveFileDialog = new OpenFileDialog
+            {
+                Filter = "png file (*.png)|*.png"
+            };
 
             if (saveFileDialog.ShowDialog() == true)
             {
 
                 List<Cell> cellList2 = Conversor.OpenPngToCellList(saveFileDialog.FileName);
-
-                for (int i = 0; i < cellList2.Count(); i++)
+                int side = (int)Math.Sqrt(d: cellList2.Count);
+                canvasSize = (side, side);
+                CreateGrid(canvasSize);
+                AddCells(canvasSize);
+                for (int i = 0; i
+                    < cellList2.Count; i++)
                 {
-                    cellList.
+                    cellList[i].setColor(new SolidColorBrush(cellList2[i].getColor()));
                 }
             }
                 

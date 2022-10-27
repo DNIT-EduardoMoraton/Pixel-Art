@@ -69,21 +69,30 @@ namespace Pixel_Art
             List<Cell> list = new List<Cell>();
 
             Bitmap bmp = new Bitmap(path);
-            for (int i = 0; i < bmp.Width; i++)
-            {
-                for (int j = 0; j < bmp.Height; j++)
-                {
-                    Cell c = new Cell((i, j));
 
-                    byte r = bmp.GetPixel(i, j).R;
-                    byte g = bmp.GetPixel(i, j).G;
-                    byte b = bmp.GetPixel(i, j).B;
-                    byte a = bmp.GetPixel(i, j).A;
-                    System.Windows.Media.Color newColor = System.Windows.Media.Color.FromArgb(a, r, g, b);
-                    c.setColor(new SolidColorBrush(newColor));
-                    list.Add(c);
+            if (bmp.Width == bmp.Height)
+            {
+                for (int i = 0; i < bmp.Width; i++)
+                {
+                    for (int j = 0; j < bmp.Height; j++)
+                    {
+                        Cell c = new Cell((j, i));
+
+                        byte r = bmp.GetPixel(j, i).R;
+                        byte g = bmp.GetPixel(j, i).G;
+                        byte b = bmp.GetPixel(j, i).B;
+                        byte a = bmp.GetPixel(j, i).A;
+                        System.Windows.Media.Color newColor = System.Windows.Media.Color.FromArgb(a, r, g, b);
+                        c.setColor(new SolidColorBrush(newColor));
+                        list.Add(c);
+                    }
                 }
+            } else
+            {
+                System.Windows.MessageBox.Show("Solo se pueden importar imágemes con relación de aspecto 1:1", "ERROR", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
+
+
 
 
             
